@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "yawps"
+version = "0.0.1"
+description = "Yet Another Workflow Parser for SecurityHub"
+authors = ["Marcus Young <myoung34@my.apsu.edu>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4.0"
+boto3 = "^1.18.48"
+slacker = "^0.14.0"
+
+[tool.poetry.dev-dependencies]
+isort = "5.9.3"
+flake8 = "^3.9.2"
+pytest = "^6.2.5"
+pylint = "^2.11.1"
+pytest-cov = "^2.12.1"
+coverage = "^5.5"
+tox = "^3.24.4"
+mypy = "^0.910"
+bandit = "^1.7.0"

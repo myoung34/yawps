@@ -1,0 +1,36 @@
+name: Test
+
+on:
+  push:
+    branches-ignore:
+      - 'master'
+      - 'refs/tags/*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.6', '3.7', '3.8' ]
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Setup python
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
+    - name: Get short Python version
+      id: full-python-version
+      shell: bash
+      run: echo ::set-output name=version::$(python -c "import sys; print(f'py{sys.version_info.major}{sys.version_info.minor}')")
+    - name: install pre-reqs
+      run: sudo apt-get update && sudo apt-get install libbluetooth-dev && pip install poetry pre-commit
+    - name: lint
+      run: pre-commit run --all-files
+    - name: Configure poetry
+      run: poetry config virtualenvs.in-project true
+    - name: Install dependencies
+      run: poetry install
+    - name: Run tox
+      run: poetry run tox -e ${{ steps.full-python-version.outputs.version }}
