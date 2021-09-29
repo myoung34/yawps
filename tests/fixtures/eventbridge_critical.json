@@ -1,0 +1,85 @@
+{
+  "version": "0",
+  "id": "d40dfb88-1376-dd96-ee03-5e7d9a1de499",
+  "detail-type": "Security Hub Findings - Imported",
+  "source": "aws.securityhub",
+  "account": "1111111111",
+  "time": "2021-09-27T14:24:17Z",
+  "region": "us-east-1",
+  "resources": [
+    "arn:aws:securityhub:us-east-1::product/aws/securityhub/arn:aws:securityhub:us-east-1:1111111111:subscription/aws-foundational-security-best-practices/v/1.0.0/Config.2/finding/ba9755a5-9ad7-4c56-9d06-a1087a30c3ec"
+  ],
+  "detail": {
+    "findings": [
+      {
+        "ProductArn": "arn:aws:securityhub:us-east-1::product/aws/securityhub",
+        "Types": [
+          "Software and Configuration Checks/Industry and Regulatory Standards/AWS-Foundational-Security-Best-Practices"
+        ],
+        "Description": "This AWS control checks something critical",
+        "Compliance": {
+          "Status": "FAILED"
+        },
+        "ProductName": "Security Hub",
+        "FirstObservedAt": "2021-09-21T17:27:38.368Z",
+        "CreatedAt": "2021-09-21T17:27:38.368Z",
+        "LastObservedAt": "2021-09-27T05:36:26.146Z",
+        "CompanyName": "AWS",
+        "FindingProviderFields": {
+          "Types": [
+            "Software and Configuration Checks/Industry and Regulatory Standards/AWS-Foundational-Security-Best-Practices"
+          ],
+          "Severity": {
+            "Normalized": 100,
+            "Label": "CRITICAL",
+            "Product": 100,
+            "Original": "CRITICAL"
+          }
+        },
+        "ProductFields": {
+          "StandardsArn": "arn:aws:securityhub:::standards/aws-foundational-security-best-practices/v/1.0.0",
+          "StandardsSubscriptionArn": "arn:aws:securityhub:us-east-1:1111111111:subscription/aws-foundational-security-best-practices/v/1.0.0",
+          "ControlId": "Config.2",
+          "RecommendationUrl": "https://docs.aws.amazon.com/console/securityhub/Config.2/remediation",
+          "StandardsControlArn": "arn:aws:securityhub:us-east-1:1111111111:control/aws-foundational-security-best-practices/v/1.0.0/Config.2",
+          "aws/securityhub/ProductName": "Security Hub",
+          "aws/securityhub/CompanyName": "AWS",
+          "Resources:0/Id": "arn:aws:iam::1111111111:root",
+          "aws/securityhub/FindingId": "arn:aws:securityhub:us-east-1::product/aws/securityhub/arn:aws:securityhub:us-east-1:1111111111:subscription/aws-foundational-security-best-practices/v/1.0.0/Config.2/finding/ba9755a5-9ad7-4c56-9d06-a1087a30c3ec"
+        },
+        "Remediation": {
+          "Recommendation": {
+            "Text": "For directions on how to fix this issue, consult the AWS Security Hub Foundational Security Best Practices documentation.",
+            "Url": "https://docs.aws.amazon.com/console/securityhub/Config.2/remediation"
+          }
+        },
+        "SchemaVersion": "2018-10-08",
+        "GeneratorId": "aws-foundational-security-best-practices/v/1.0.0/Config.2",
+        "RecordState": "ACTIVE",
+        "Title": "Config.2 AWS something or other",
+        "Workflow": {
+          "Status": "NEW"
+        },
+        "Severity": {
+          "Normalized": 100,
+          "Label": "CRITICAL",
+          "Product": 100,
+          "Original": "CRITICAL"
+        },
+        "UpdatedAt": "2021-09-27T05:36:22.228Z",
+        "WorkflowState": "NEW",
+        "AwsAccountId": "1111111111",
+        "Region": "us-east-1",
+        "Id": "arn:aws:securityhub:us-east-1:1111111111:subscription/aws-foundational-security-best-practices/v/1.0.0/Config.2/finding/caa2d7ef-5418-4c31-85fa-2f46f48f25e3",
+        "Resources": [
+          {
+            "Partition": "aws",
+            "Type": "AwsAccount",
+            "Region": "us-east-1",
+            "Id": "AWS::::Account:1111111111"
+          }
+        ]
+      }
+    ]
+  }
+}
