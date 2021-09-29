@@ -36,6 +36,7 @@ The only real pre-requisite here is a working [multi-account SecurityHub](https:
 
 | Environment Variable | Description |
 | --- | --- |
+| `SLACK_FALLBACK_CHANNEL` | Channel to fallback to if the `slack_channel` tag is not provided on the account |
 | `SLACK_TOKEN` | the path in SSM to the slack token` |
 | `SLACK_TOKEN_SSM_PATH` | if a `SLACK_TOKEN` is not found, this is where to grab it from the EC2 Param store |
 | `LOGGING_LEVEL` | the logging level to use. Default is `INFO` |

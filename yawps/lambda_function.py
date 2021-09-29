@@ -10,6 +10,8 @@ import sys
 import boto3
 from slacker import Slacker
 
+from yawps.exceptions import NoSlackChannelException
+
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
 handler = logging.StreamHandler(sys.stdout)
@@ -20,7 +22,11 @@ LOGGER.addHandler(handler)
 org_client = boto3.client('organizations')
 
 
-def get_account_tag(account_id: str, tag_key: str) -> str:
+def get_account_tag(
+    account_id: str,
+    tag_key: str,
+    fallback_value: str = ""
+) -> str:
     """ Call ListTagsForResource on an account and return the specified
         value for a tag.
 
@@ -28,11 +34,15 @@ def get_account_tag(account_id: str, tag_key: str) -> str:
         account_id (str): the account ID to get tags for
         tag_key (str): the key to look for in the tags searched
     """
-
-    return [
-        tag for tag in org_client.list_tags_for_resource(
-            ResourceId=account_id
-        )['Tags'] if tag['Key'] == tag_key][0]['Value']
+    value = ""
+    try:
+        value = [
+            tag for tag in org_client.list_tags_for_resource(
+                ResourceId=account_id
+            )['Tags'] if tag['Key'] == tag_key][0]['Value']
+    except IndexError:
+        value = fallback_value
+    return value
 
 
 def parse(finding, account_name):
@@ -92,6 +102,7 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
     Arg: context (dict)
     """
     ssm_client = boto3.client('ssm')
+    fallback_channel = os.environ.get('SLACK_FALLBACK_CHANNEL')
     slack_token = os.environ.get(
         'SLACK_TOKEN',
         ssm_client.get_parameter(
@@ -112,8 +123,18 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
         '[Debug] Base64 encoded payload: %s',
         base64.b64encode(json.dumps(event).encode('ascii'))
     )
-    slack_channel = get_account_tag(event['account'], 'slack_channel')
-    account_name = get_account_tag(event['account'], 'account_name')
+    slack_channel = get_account_tag(
+        event['account'],
+        'slack_channel',
+        fallback_channel
+    )
+    if not slack_channel:
+        raise NoSlackChannelException('No slack channel found. Either add a slack_channel tag to all accounts or set a SLACK_FALLBACK_CHANNEL environment variable')  # noqa
+    account_name = get_account_tag(
+        event['account'],
+        'account_name',
+        event['account']
+    )
     parsed_message = parse(event['detail']['findings'][0], account_name)
 
     try:
