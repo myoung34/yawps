@@ -80,14 +80,19 @@ def parse(finding, account_name):
         },
 
     ]
+    title = None
+    title_link = None
+    if finding.get('Remediation'):
+        title = finding['Remediation']['Recommendation']['Text']
+        title_link = finding['Remediation']['Recommendation']['Url']
 
     attachments = [{
         "mrkdwn_in": ["text"],
         'fallback': finding['Description'],
         'message': '',
         'color': 'bad',
-        'title': finding['Remediation']['Recommendation']['Text'],
-        'title_link': finding['Remediation']['Recommendation']['Url'],
+        'title': title,
+        'title_link': title_link,
         "fields": fields
     }]
     return {
@@ -124,32 +129,47 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
         '[Debug] Base64 encoded payload: %s',
         base64.b64encode(json.dumps(event).encode('ascii'))
     )
+
+    finding = event['detail']['findings'][0]
+
     slack_channel = get_account_tag(
-        event['account'],
+        finding['AwsAccountId'],
         'slack_channel',
         fallback_channel
     )
     if not slack_channel:
         raise NoSlackChannelException('No slack channel found. Either add a slack_channel tag to all accounts or set a SLACK_FALLBACK_CHANNEL environment variable')  # noqa
+
     account_name = get_account_tag(
-        event['account'],
+        finding['AwsAccountId'],
         'account_name',
         event['account']
     )
-    parsed_message = parse(event['detail']['findings'][0], account_name)
+    parsed_message = parse(finding, account_name)
 
     if ast.literal_eval(os.environ.get('ENABLE_FORK_SEVERITY', 'False')):
-        finding = event['detail']['findings'][0]
-        severity = finding['FindingProviderFields']['Severity']['Normalized']
+        _severity = finding['FindingProviderFields']['Severity']
+        severity = int(_severity['Normalized'])
+
         if severity >= int(os.environ.get('FORK_SEVERITY_VALUE', '100')):
             slack.chat.post_message(
                 fallback_channel,
                 parsed_message['message'],
                 attachments=parsed_message['attachments']
             )
+        LOGGER.debug(
+            'sent to fallback channel %s due to severity %s',
+            fallback_channel,
+            severity
+        )
 
     slack.chat.post_message(
         slack_channel,
         parsed_message['message'],
         attachments=parsed_message['attachments']
+    )
+
+    LOGGER.debug(
+        'Sent to main channel %s',
+        slack_channel
     )
