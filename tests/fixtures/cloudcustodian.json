@@ -1,0 +1,75 @@
+{
+  "version": "0",
+  "id": "3d7dc1cc-15d3-26c4-ce95-61aace96b575",
+  "detail-type": "Security Hub Findings - Imported",
+  "source": "aws.securityhub",
+  "account": "222222222",
+  "time": "2021-09-29T18:16:05Z",
+  "region": "us-east-1",
+  "resources": [
+    "arn:aws:securityhub:us-east-1::product/cloud-custodian/cloud-custodian/us-east-1/3333333333/f5579a3634784b195dc61ae856a57e68/b0b09d0d76d96827081d4e99be51f218"
+  ],
+  "detail": {
+    "findings": [
+      {
+        "ProductArn": "arn:aws:securityhub:us-east-1::product/cloud-custodian/cloud-custodian",
+        "Types": [
+          "Software and Configuration Checks/AWS Security Best Practices"
+        ],
+        "Description": "A Team Engine admin sso login has occurred",
+        "SchemaVersion": "2018-10-08",
+        "ProductName": "Cloud Custodian",
+        "GeneratorId": "engine-admin-login-detected",
+        "CreatedAt": "2021-05-26T17:24:06.019015+00:00",
+        "RecordState": "ACTIVE",
+        "Title": "engine-admin-login-detected",
+        "Workflow": {
+          "Status": "NEW"
+        },
+        "Severity": {
+          "Normalized": 100,
+          "Label": "INFORMATIONAL",
+          "Product": 0
+        },
+        "UpdatedAt": "2021-09-29T18:16:01.411495+00:00",
+        "CompanyName": "Cloud Custodian",
+        "FindingProviderFields": {
+          "Types": [
+            "Software and Configuration Checks/AWS Security Best Practices"
+          ],
+          "Severity": {
+            "Normalized": 100,
+            "Label": "INFORMATIONAL",
+            "Product": 0
+          }
+        },
+        "WorkflowState": "NEW",
+        "ProductFields": {
+          "resource": "account",
+          "ProviderName": "CloudCustodian",
+          "ProviderVersion": "0.9.11",
+          "aws/securityhub/FindingId": "arn:aws:securityhub:us-east-1::product/cloud-custodian/cloud-custodian/us-east-1/3333333333/f5579a3634784b195dc61ae856a57e68/b0b09d0d76d96827081d4e99be51f218",
+          "aws/securityhub/ProductName": "Cloud Custodian",
+          "aws/securityhub/CompanyName": "Cloud Custodian"
+        },
+        "AwsAccountId": "3333333333",
+        "Region": "us-east-1",
+        "Id": "us-east-1/3333333333/f5579a3634784b195dc61ae856a57e68/b0b09d0d76d96827081d4e99be51f218",
+        "Resources": [
+          {
+            "Partition": "aws",
+            "Type": "Other",
+            "Details": {
+              "Other": {
+                "account_id": "3333333333",
+                "c7n:resource-type": "account"
+              }
+            },
+            "Region": "us-east-1",
+            "Id": "arn:::3333333333"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -28,3 +28,15 @@ def securityhub_critical_finding_fixture():
     )
     with open(payload_file) as data_file:
         return json.load(data_file)
+
+
+@pytest.fixture()
+def cloudcustodian_fixture():
+    """ cloudcustodian fixture """
+    payload_file = os.path.join(
+        os.path.dirname(__file__),
+        'fixtures',
+        'cloudcustodian.json'
+    )
+    with open(payload_file) as data_file:
+        return json.load(data_file)
