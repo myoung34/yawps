@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint:disable=line-too-long
 """ Lambda to handle dynamic security hub slack messages """
+import ast
 import base64
 import json
 import logging
@@ -137,12 +138,18 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
     )
     parsed_message = parse(event['detail']['findings'][0], account_name)
 
-    try:
-        slack.chat.post_message(
-            slack_channel,
-            parsed_message['message'],
-            attachments=parsed_message['attachments']
-        )
-    except Exception as slack_exc:
-        print(f"Could not send to channel {slack_channel}")
-        raise slack_exc
+    if ast.literal_eval(os.environ.get('ENABLE_FORK_SEVERITY', 'False')):
+        finding = event['detail']['findings'][0]
+        severity = finding['FindingProviderFields']['Severity']['Normalized']
+        if severity >= int(os.environ.get('FORK_SEVERITY_VALUE', '100')):
+            slack.chat.post_message(
+                fallback_channel,
+                parsed_message['message'],
+                attachments=parsed_message['attachments']
+            )
+
+    slack.chat.post_message(
+        slack_channel,
+        parsed_message['message'],
+        attachments=parsed_message['attachments']
+    )

@@ -40,6 +40,8 @@ The only real pre-requisite here is a working [multi-account SecurityHub](https:
 | `SLACK_TOKEN` | the path in SSM to the slack token` |
 | `SLACK_TOKEN_SSM_PATH` | if a `SLACK_TOKEN` is not found, this is where to grab it from the EC2 Param store |
 | `LOGGING_LEVEL` | the logging level to use. Default is `INFO` |
+| `ENABLE_FORK_SEVERITY` |  Enable the ability to fork some messages to another channel by severity. Value can be `True` or `False`. Default is `False` |
+| `FORK_SEVERITY_VALUE` |  If `ENABLE_FORK_SEVERITY` is True, what severity level to fork by. Should be an integer between 0 and 100. Default is `100` |
 
 
 ## Deploy ##
