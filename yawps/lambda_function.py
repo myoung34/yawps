@@ -11,7 +11,8 @@ import sys
 import boto3
 from slacker import Slacker
 
-from yawps.exceptions import NoSlackChannelException
+from yawps.exceptions import (NoFallBackSlackChannelException,
+                              NoSlackChannelException)
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
@@ -147,29 +148,47 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
     )
     parsed_message = parse(finding, account_name)
 
-    if ast.literal_eval(os.environ.get('ENABLE_FORK_SEVERITY', 'False')):
-        _severity = finding['FindingProviderFields']['Severity']
-        severity = int(_severity['Normalized'])
+    _severity = finding['FindingProviderFields']['Severity']
+    severity = int(_severity['Normalized'])
 
-        if severity >= int(os.environ.get('FORK_SEVERITY_VALUE', '100')):
+    if (
+            os.environ.get('ONLY_FALLBACK_SEVERITY') and
+            severity == int(os.environ.get('ONLY_FALLBACK_SEVERITY'))
+    ):
+        if os.environ.get('SLACK_FALLBACK_CHANNEL'):
             slack.chat.post_message(
                 fallback_channel,
                 parsed_message['message'],
                 attachments=parsed_message['attachments']
             )
-        LOGGER.debug(
-            'sent to fallback channel %s due to severity %s',
-            fallback_channel,
-            severity
+            LOGGER.debug(
+                'Sent to main channel %s',
+                fallback_channel
+            )
+        else:
+            raise NoFallBackSlackChannelException('No SLACK_FALLBACK_CHANNEL environment variable provided. This is required with ONLY_FALLBACK_SEVERITY')  # noqa
+    else:
+        if ast.literal_eval(os.environ.get('ENABLE_FORK_SEVERITY', 'False')):
+
+            if severity >= int(os.environ.get('FORK_SEVERITY_VALUE', '100')):
+                slack.chat.post_message(
+                    fallback_channel,
+                    parsed_message['message'],
+                    attachments=parsed_message['attachments']
+                )
+            LOGGER.debug(
+                'sent to fallback channel %s due to severity %s',
+                fallback_channel,
+                severity
+            )
+
+        slack.chat.post_message(
+            slack_channel,
+            parsed_message['message'],
+            attachments=parsed_message['attachments']
         )
 
-    slack.chat.post_message(
-        slack_channel,
-        parsed_message['message'],
-        attachments=parsed_message['attachments']
-    )
-
-    LOGGER.debug(
-        'Sent to main channel %s',
-        slack_channel
-    )
+        LOGGER.debug(
+            'Sent to main channel %s',
+            slack_channel
+        )
