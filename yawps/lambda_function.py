@@ -146,28 +146,46 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
         event['account']
     )
     parsed_message = parse(finding, account_name)
+    _severity = finding['FindingProviderFields']['Severity']
+    severity = int(_severity['Normalized'])
 
-    if ast.literal_eval(os.environ.get('ENABLE_FORK_SEVERITY', 'False')):
-        _severity = finding['FindingProviderFields']['Severity']
-        severity = int(_severity['Normalized'])
-
-        if severity >= int(os.environ.get('FORK_SEVERITY_VALUE', '100')):
+    if ast.literal_eval(os.environ.get('ENABLE_FORK_COPY_SEVERITY', 'False')):
+        if severity == int(os.environ.get('FORK_COPY_SEVERITY_VALUE', '90')):
             slack.chat.post_message(
                 fallback_channel,
                 parsed_message['message'],
                 attachments=parsed_message['attachments']
             )
-        LOGGER.debug(
-            'sent to fallback channel %s due to severity %s',
-            fallback_channel,
-            severity
-        )
+            LOGGER.debug(
+                'sent to fallback channel %s due to severity %s',
+                fallback_channel,
+                severity
+            )
 
-    slack.chat.post_message(
-        slack_channel,
-        parsed_message['message'],
-        attachments=parsed_message['attachments']
-    )
+    if ast.literal_eval(os.environ.get('ENABLE_FORK_ONLY_SEVERITY', 'False')):
+
+        if severity == int(os.environ.get('FORK_ONLY_SEVERITY_VALUE', '100')):
+            slack.chat.post_message(
+                fallback_channel,
+                parsed_message['message'],
+                attachments=parsed_message['attachments']
+            )
+            LOGGER.debug(
+                'sent to fallback channel %s due to severity %s',
+                fallback_channel,
+                severity
+            )
+
+    # Send if were not doing fork only, or if fork only is on
+    # but the severity doesnt match
+    if not ast.literal_eval(
+        os.environ.get('ENABLE_FORK_ONLY_SEVERITY', 'False')
+    ) or severity != int(os.environ.get('FORK_ONLY_SEVERITY_VALUE', '100')):
+        slack.chat.post_message(
+            slack_channel,
+            parsed_message['message'],
+            attachments=parsed_message['attachments']
+        )
 
     LOGGER.debug(
         'Sent to main channel %s',
