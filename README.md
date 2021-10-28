@@ -40,9 +40,22 @@ The only real pre-requisite here is a working [multi-account SecurityHub](https:
 | `SLACK_TOKEN` | the path in SSM to the slack token` |
 | `SLACK_TOKEN_SSM_PATH` | if a `SLACK_TOKEN` is not found, this is where to grab it from the EC2 Param store |
 | `LOGGING_LEVEL` | the logging level to use. Default is `INFO` |
-| `ENABLE_FORK_SEVERITY` |  Enable the ability to fork some messages to another channel by severity. Value can be `True` or `False`. Default is `False` |
-| `FORK_SEVERITY_VALUE` |  If `ENABLE_FORK_SEVERITY` is True, what severity level to fork by. Should be an integer between 0 and 100. Default is `100` |
+| `ENABLE_FORK_COPY_SEVERITY` |  Enable the ability to fork some messages to another channel by severity. Value can be `True` or `False`. Default is `False` |
+| `FORK_COPY_SEVERITY_VALUE` |  If `ENABLE_FORK_COPY_SEVERITY` is True, what severity level to fork by. Should be an integer between 0 and 100. Default is `90` |
+| `ENABLE_FORK_ONLY_SEVERITY` |  Enable the ability to fork some messages to **only** another channel by severity. Value can be `True` or `False`. Default is `False` |
+| `FORK_ONLY_SEVERITY_VALUE` |  If `ENABLE_FORK_ONLY_SEVERITY` is True, what severity level to fork by. Should be an integer between 0 and 100. Default is `100` |
 
+## Forking ##
+
+There are a few use cases for forking.
+
+In general (all defaults) YAWPS will only send to the channel found in the tag or the `SLACK_FALLBACK_CHANNEL` (because it's required).
+
+This is great until you have rules that you want a second team (lets say security) to also see and follow up with.
+
+Using `ENABLE_FORK_COPY_SEVERITY` and `FORK_COPY_SEVERITY_VALUE` lets you **also** send to that second slack channel. Lets say you set `FORK_COPY_SEVERITY_VALUE` to 90. This means that anything rated 90 will send to both.
+
+Another use-case exists: not sending team specific alerts. Lets say that an alert is not actionable by the configured team, but is purely for security visibility (like failed IAM logins etc). You can use `ENABLE_FORK_ONLY_SEVERITY` set to, say 100, in this scenario so that custom rules can set severity to 100 and send it only to security and bypass the primary team. This is good for noise filtration and helping to keep things actionable by a singular source.
 
 ## Deploy ##
 
