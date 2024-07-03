@@ -13,4 +13,3 @@ RUN poetry config virtualenvs.create false
 COPY poetry.lock pyproject.toml /src/
 WORKDIR /src
 RUN poetry install -n --no-ansi
-
