@@ -1,0 +1,16 @@
+FROM python:3.8
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    POETRY_VERSION=1.6.0 \
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    POETRY_HOME="/opt/poetry" \
+    AWS_DEFAULT_REGION="us-east-1"
+
+ENV PATH="$POETRY_HOME/bin:/src/.venv/bin:$PATH"
+
+RUN pip3 install poetry
+RUN poetry config virtualenvs.create false
+COPY poetry.lock pyproject.toml /src/
+WORKDIR /src
+RUN poetry install -n --no-ansi
+

@@ -11,3 +11,5 @@ config.ini
 .venv
 .vscode
 junit.html
+.devenv
+.idea

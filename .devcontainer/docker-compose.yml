@@ -1,0 +1,4 @@
+services:
+  yawps:
+    build:
+      dockerfile: Dockerfile.dev

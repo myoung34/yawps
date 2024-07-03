@@ -1,0 +1,11 @@
+{
+  "name": "Yawps",
+  "dockerFile": "Dockerfile",
+  "postCreateCommand": "poetry install -n --no-ansi",
+  "containerEnv": {
+    "MY_VARIABLE": "1"
+  },
+  "shutdownAction": "none",
+  "privileged": true,
+  "capAdd": []
+}
