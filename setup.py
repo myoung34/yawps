@@ -27,6 +27,6 @@ setup(
         's3transfer==0.5.0',
         'six==1.16.0',
         'slacker==0.14.0',
-        'urllib3==1.26.7'
+        'urllib3==2.8.0'
     ],
 )
