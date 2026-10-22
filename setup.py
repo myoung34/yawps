@@ -18,7 +18,7 @@ setup(
     install_requires=[
         'boto3==1.18.48',
         'botocore==1.21.48',
-        'certifi==2021.5.30',
+        'certifi==2026.10.19',
         'charset-normalizer==2.0.6',
         'idna==3.2',
         'jmespath==0.10.0',
